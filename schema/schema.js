@@ -24,6 +24,15 @@ const CommentType = new GraphQLObjectType({
     }
 })
 
+const FilterBy = new GraphQLObjectType({
+    name: 'FilterBy',
+    fields: {
+        name: {type: GraphQLString},
+        email: {type: GraphQLString},
+        body: {type: GraphQLString}
+    }
+})
+
 const RootQuery = new GraphQLObjectType({
     name: 'RootQuery',
     fields: {
@@ -55,18 +64,41 @@ const RootQuery = new GraphQLObjectType({
         },
         getAllComments: {
             type: new GraphQLList(CommentType),
-            args: {id: {type: GraphQLInt}, sortOfKey: {type: GraphQLInt}, limit: {type: GraphQLInt}},
-            resolve: async (parent, {sortOfKey = null, limit = null}) => {
+            args: {
+                id: {type: GraphQLInt},
+                sortOfKey: {type: GraphQLInt},
+                limit: {type: GraphQLInt},
+                filterBy: {type: GraphQLString}
+            },
+            resolve: async (parent, {sortOfKey = null, limit = null, filterBy = null}) => {
                 const commentsJson = await data.getComment();
                 const comments = await commentsJson.json();
+
+                let commentList;
+                if (filterBy != null) {
+                    switch (filterBy) {
+                        case 'name':
+                            commentList = _(comments).orderBy(['name'], ['asc']);
+                            break;
+                        case 'email':
+                            commentList = _(comments).orderBy(['email'], ['asc']);
+                            break;
+                        case 'body':
+                            commentList = _(comments).orderBy(['body'], ['asc']);
+                            break;
+                        default:
+                            commentList = comments;
+                    }
+                }
+
                 if (sortOfKey || limit) {
-                    const sort = _.drop(comments, (sortOfKey));
+                    const sort = _.drop(commentList, (sortOfKey));
                     if (limit != null) {
                         return _.take(sort, limit);
                     }
                     return sort;
                 } else {
-                    return comments;
+                    return commentList;
                 }
             }
         },
