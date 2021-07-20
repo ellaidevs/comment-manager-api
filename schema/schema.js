@@ -35,6 +35,22 @@ const RootQuery = new GraphQLObjectType({
                 return _.find(posts, {id: args.id})
             }
         },
+        getAllPosts: {
+            type: new GraphQLList(PostType),
+            args: {id: {type: GraphQLInt}},
+            resolve(parent, args) {
+                const posts = data.getPost();
+                return posts;
+            }
+        },
+        getAllComments: {
+            type: new GraphQLList(CommentType),
+            args: {id: {type: GraphQLInt}},
+            resolve(parent, args) {
+                const comments = data.getComment();
+                return comments;
+            }
+        },
     }
 })
 
