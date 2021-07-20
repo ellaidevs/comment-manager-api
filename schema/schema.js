@@ -24,15 +24,6 @@ const CommentType = new GraphQLObjectType({
     }
 })
 
-const FilterBy = new GraphQLObjectType({
-    name: 'FilterBy',
-    fields: {
-        name: {type: GraphQLString},
-        email: {type: GraphQLString},
-        body: {type: GraphQLString}
-    }
-})
-
 const RootQuery = new GraphQLObjectType({
     name: 'RootQuery',
     fields: {
