@@ -23,3 +23,21 @@ const CommentType = new GraphQLObjectType({
         body: {type: GraphQLString}
     }
 })
+
+const RootQuery = new GraphQLObjectType({
+    name: 'RootQuery',
+    fields: {
+        getPost: {
+            type: PostType,
+            args: {id: {type: GraphQLInt}},
+            resolve(parent, args) {
+                const posts = data.getPost();
+                return _.find(posts, {id: args.id})
+            }
+        },
+    }
+})
+
+module.exports = new GraphQLSchema({
+    query: RootQuery
+})
