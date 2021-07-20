@@ -55,10 +55,19 @@ const RootQuery = new GraphQLObjectType({
         },
         getAllComments: {
             type: new GraphQLList(CommentType),
-            args: {id: {type: GraphQLInt}},
-            resolve: async (parent, args) => {
-                const comments = await data.getComment();
-                return await comments.json();
+            args: {id: {type: GraphQLInt}, sortOfKey: {type: GraphQLInt}, limit: {type: GraphQLInt}},
+            resolve: async (parent, {sortOfKey = null, limit = null}) => {
+                const commentsJson = await data.getComment();
+                const comments = await commentsJson.json();
+                if (sortOfKey || limit) {
+                    const sort = _.drop(comments, (sortOfKey));
+                    if (limit != null) {
+                        return _.take(sort, limit);
+                    }
+                    return sort;
+                } else {
+                    return comments;
+                }
             }
         },
     }
