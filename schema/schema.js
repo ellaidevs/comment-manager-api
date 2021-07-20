@@ -30,25 +30,26 @@ const RootQuery = new GraphQLObjectType({
         getPost: {
             type: PostType,
             args: {id: {type: GraphQLInt}},
-            resolve(parent, args) {
-                const posts = data.getPost();
+            resolve: async (parent, args) => {
+                const dataPost = await data.getPost();
+                const posts = await dataPost.json();
                 return _.find(posts, {id: args.id})
             }
         },
         getAllPosts: {
             type: new GraphQLList(PostType),
             args: {id: {type: GraphQLInt}},
-            resolve(parent, args) {
-                const posts = data.getPost();
-                return posts;
+            resolve: async (parent, args) => {
+                const posts = await data.getPost();
+                return await posts.json();
             }
         },
         getAllComments: {
             type: new GraphQLList(CommentType),
             args: {id: {type: GraphQLInt}},
-            resolve(parent, args) {
-                const comments = data.getComment();
-                return comments;
+            resolve: async (parent, args) => {
+                const comments = await data.getComment();
+                return await comments.json();
             }
         },
     }
