@@ -59,7 +59,7 @@ const RootQuery = new GraphQLObjectType({
                 id: {type: GraphQLInt},
                 sortOfKey: {type: GraphQLInt},
                 limit: {type: GraphQLInt},
-                filterBy: {type: GraphQLString}
+                filterBy: {type: GraphQLString} //add type to filterBy
             },
             resolve: async (parent, {sortOfKey = null, limit = null, filterBy = null}) => {
                 const commentsJson = await data.getComment();
